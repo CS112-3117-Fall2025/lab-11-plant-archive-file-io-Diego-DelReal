@@ -1,8 +1,13 @@
+import java.io.*;
+import java.util.InputMismatchException;
+import java.util.Scanner;
+
 public class Plant {
 	// CONSTANTS
 	public static final String DEFAULT_NAME = "Mario Mushroom";
 	public static final double DEFAULT_TEMP_FAHRENHEIT = 451.0;
 	public static final String DEFAULT_USES = "Makes you Super!";
+	public static final String FILE_NAME = "Forage.csv";
 
 	// INSTANCE VARIABLES
 	private String name;
@@ -35,8 +40,38 @@ public class Plant {
 
 	//TODO: Step 1 = CSV string constructor
 
+	public Plant(String csvLine) {
+		BufferedReader inputStream;
+		String[] parts;
+		String name, uses, temp;
+		double tempF;
+		Plant plant;
 
+		inputStream = null;
+		temp = null;
 
+		try {
+			inputStream = new BufferedReader(new FileReader(FILE_NAME));
+			temp = inputStream.readLine();
+			inputStream.close();
+		}
+		catch (FileNotFoundException fnfe) {
+			System.out.println("ERROR: File " + FILE_NAME + " not found or could not be opened.");
+			System.exit(0);
+		}
+		catch (IOException ioe) {
+			System.out.println("ERROR reading from " + FILE_NAME);
+			System.exit(0);
+		}
+
+		parts = temp.split(",");
+		name = parts[0];
+		tempF = Double.parseDouble(parts[1]);
+		uses = parts[2];
+
+		plant = new Plant(name, tempF, uses);
+		System.out.println("New plant info entered:\n" + plant);
+	}
 
 	// MUTATORS/SETTERS
 	public boolean setName(String name) {
