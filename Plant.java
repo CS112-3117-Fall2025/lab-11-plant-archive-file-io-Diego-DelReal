@@ -7,7 +7,6 @@ public class Plant {
 	public static final String DEFAULT_NAME = "Mario Mushroom";
 	public static final double DEFAULT_TEMP_FAHRENHEIT = 451.0;
 	public static final String DEFAULT_USES = "Makes you Super!";
-	public static final String FILE_NAME = "Forage.csv";
 
 	// INSTANCE VARIABLES
 	private String name;
@@ -40,37 +39,30 @@ public class Plant {
 
 	//TODO: Step 1 = CSV string constructor
 
-	public Plant(String csvLine) {
-		BufferedReader inputStream;
-		String[] parts;
-		String name, uses, temp;
-		double tempF;
-		Plant plant;
+	public Plant(String csv) {
+		if (csv == null || csv.isEmpty()) {
+			throw new IllegalArgumentException("No CSV string given to the constructor.");
+		}
+		
+		String[] parts = csv.split(",");
 
-		inputStream = null;
-		temp = null;
+		if (parts.length != 3) {
+			throw new IllegalArgumentException("CSV string doesn't have required number of values");
+		}
 
+		String name, uses;
+		double temp;
 		try {
-			inputStream = new BufferedReader(new FileReader(FILE_NAME));
-			temp = inputStream.readLine();
-			inputStream.close();
+			temp = Double.parseDouble(parts[1]);
 		}
-		catch (FileNotFoundException fnfe) {
-			System.out.println("ERROR: File " + FILE_NAME + " not found or could not be opened.");
-			System.exit(0);
+		catch (NumberFormatException nfe) {
+			throw new IllegalArgumentException("CSV string doesn't have a valid temp as second value in CSV string");
 		}
-		catch (IOException ioe) {
-			System.out.println("ERROR reading from " + FILE_NAME);
-			System.exit(0);
-		}
-
-		parts = temp.split(",");
+		
 		name = parts[0];
-		tempF = Double.parseDouble(parts[1]);
 		uses = parts[2];
 
-		plant = new Plant(name, tempF, uses);
-		System.out.println("New plant info entered:\n" + plant);
+		this.setAll(name, temp, uses);
 	}
 
 	// MUTATORS/SETTERS
