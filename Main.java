@@ -1,7 +1,8 @@
 // TODO: Step 2 - Import file input statements here
-import java.io.*;
+import java.io.FileInputStream;
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.io.FileNotFoundException;
 
 public class Main 
 {
@@ -14,13 +15,31 @@ public class Main
 
 		//TODO: Step 2 - Declare + initialize variables for file input here
 
-		String FILE_NAME = "Forage.csv";
+		Scanner inputFile = null;
+		ArrayList<Plant> myPlants = new ArrayList<Plant>();
 
 		//TODO: Step 2 - Connect input stream to file (dont forget the try/catch!)
-
+		
+		try {
+			inputFile = new Scanner(new FileInputStream("Forage.csv"));
+		} catch (FileNotFoundException fnfe) {
+			System.out.println("ERROR: Cannot open Forage.csv for input");
+			System.exit(0);
+		}
 
 		//TODO: Step 2 - create loop to read through whole file
 
+		while (inputFile.hasNextLine()) {
+			//System.out.println(inputFile.nextLine());
+
+			String currentLine = inputFile.nextLine();
+			Plant currentPlant = new Plant(currentLine);
+			myPlants.add(currentPlant);
+
+			System.out.println("Added new plant with following info: " + currentPlant.getName());
+		}
+
+		System.out.println("\n\nAdded a total of " + myPlants.size() + " records from file.\n\n");
 
 			//TODO: Step 3 - build Plant Objects and store into ArrayList
 
@@ -28,38 +47,13 @@ public class Main
 
 		//TODO: Step 2 - close the input stream
 
+		inputFile.close();
 
 		//TODO: Step 3 - print contents of ArrayList
-		BufferedReader inputStream;
-		String[] parts;
-		String name, uses, temp;
-		double tempF;
-		Plant plant;
-
-		temp = null;
-
-		try {
-			inputStream = new BufferedReader(new FileReader(FILE_NAME));
-			temp = inputStream.readLine();
-			inputStream.close();
+		
+		System.out.println("Plants in my collection:\n");
+		for (Plant p : myPlants) {
+			System.out.println(p + "\n");
 		}
-		catch (FileNotFoundException fnfe) {
-			System.out.println("ERROR: File " + FILE_NAME + " not found or could not be opened.");
-			System.exit(0);
-		}
-		catch (IOException ioe) {
-			System.out.println("ERROR reading from " + FILE_NAME);
-			System.exit(0);
-		}
-
-		parts = temp.split(",");
-		name = parts[0];
-		tempF = Double.parseDouble(parts[1]);
-		uses = parts[2];
-
-		plant = new Plant(name, tempF, uses);
-		System.out.println("New plant info entered:\n" + plant);
-
-
 	}
 }
